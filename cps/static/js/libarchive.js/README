@@ -1,0 +1,17 @@
+Imported from https://github.com/nika-begiashvili/libarchivejs (commit d2c4d676e5de69aebb1a68cd084a9419b653eae4) by:
+
+Creating the file `webpack.config.js`:
+
+```
+module.exports = {
+  entry: './main.js',
+  output: {
+    filename: 'libarchive.js'
+      ,
+    library: "libarchivejs",
+  },
+};
+```
+
+Executing `webpack` to create the file `libarchive.js` and then
+copying `libarchive.js` and `dist` to this static folder.
