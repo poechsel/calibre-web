@@ -182,7 +182,8 @@ function initProgressClick() {
     });
 }
 
-async function loadFromArrayBuffer(ab) {
+
+async function loadFromBlob(ab) {
     var lastCompletion = 0;
     const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
     const archive = await libarchivejs.Archive.open(ab);
@@ -191,14 +192,11 @@ async function loadFromArrayBuffer(ab) {
         filesArray = await archive.getFilesArray();
         totalImages = filesArray.length;
         entries = filesArray.sort((a,b) => collator.compare(a.file._path, b.file._path));
-        console.log(entries)
         for (var i = 0; i < entries.length; i++) {
             e = entries[i];
             updateProgress( (i + 1)/ totalImages * 100);
             const d = await e.file.extract();
             // add any new pages based on the filename
-            console.log(d);
-            console.log(e.file._path);
             if (imageFilenames.indexOf(e.file._path) === -1) {
                 fileData = await d.arrayBuffer();
                 let data = {filename: d.name, fileData: fileData};
@@ -546,7 +544,7 @@ function init(filename) {
     request.responseType = "blob";
     request.addEventListener("load", function() {
         if (request.status >= 200 && request.status < 300) {
-            loadFromArrayBuffer(request.response);
+            loadFromBlob(request.response);
         } else {
             console.warn(request.statusText, request.responseText);
         }
