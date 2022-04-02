@@ -190,18 +190,21 @@ async function loadFromArrayBuffer(ab) {
         console.info('Uncompressing ...');
         filesArray = await archive.getFilesArray();
         totalImages = filesArray.length;
-        entries = filesArray.sort((a,b) => collator.compare(a.path, b.path));
+        entries = filesArray.sort((a,b) => collator.compare(a.file._path, b.file._path));
+        console.log(entries)
         for (var i = 0; i < entries.length; i++) {
             e = entries[i];
             updateProgress( (i + 1)/ totalImages * 100);
             const d = await e.file.extract();
             // add any new pages based on the filename
-            if (imageFilenames.indexOf(e.path) === -1) {
+            console.log(d);
+            console.log(e.file._path);
+            if (imageFilenames.indexOf(e.file._path) === -1) {
                 fileData = await d.arrayBuffer();
                 let data = {filename: d.name, fileData: fileData};
                 var test = new kthoom.ImageFile(data);
                 if (test.mimeType !== undefined) {
-                    imageFilenames.push(e.name);
+                    imageFilenames.push(e.file._path);
                     imageFiles.push(test);
                     // add thumbnails to the TOC list
                     $("#thumbnails").append(
